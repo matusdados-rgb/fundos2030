@@ -28,15 +28,13 @@ def extrair_dados():
         {"titulo": "Inovação Produtiva", "estado": "Aberto", "programa": "COMPETE 2030", "fonte": "Portugal 2030", "links": [{"nome": "Aviso Oficial", "url": "https://portugal2030.pt/"}]},
         {"titulo": "Qualificação de PME", "estado": "Fechado", "programa": "Norte 2030", "fonte": "Portugal 2030", "links": [{"nome": "Aviso Oficial", "url": "https://portugal2030.pt/"}]},
         {"titulo": "Pequenos Investimentos Agrícolas", "estado": "Aberto", "programa": "PDR2020", "fonte": "PDR2020", "links": [{"nome": "Aviso Oficial", "url": "https://www.pdr-2020.pt/"}]},
-        {"titulo": "Qualificação da Oferta", "estado": "Aberto", "programa": "Turismo Fundos", "fonte": "Turismo de Portugal", "links": [{"nome": "Aviso Oficial", "url": "https://business.turismodeportugal.pt/"}]}
+        {"titulo": "Qualificação da Oferta", "estado": "Aberto", "programa": "Turismo Fundos", "fonte": "Turismo de Portugal", "links": [{"nome": "Aviso Oficial", "url": "https://business.turismodeportugal.pt/"}]},
+        # NOVA FONTE: IEFP
+        {"titulo": "Compromisso Emprego Sustentável", "estado": "Aberto", "programa": "Medidas de Emprego", "fonte": "IEFP", "links": [{"nome": "Aviso Oficial IEFP", "url": "https://www.iefp.pt/"}]}
     ]
 
 # --- 2. FUNÇÃO DE RESUMO ESTRUTURADO (IA - 11 PONTOS) ---
 def gerar_resumo_aviso(titulo, fonte):
-    """
-    Simula o processamento detalhado da IA para extrair exatamente os 11 pontos 
-    com informação rica e elaborada para análise técnica de consultores e PMEs.
-    """
     if fonte == "PDR2020":
         return {
             "1_areas": "Modernização do setor agroflorestal, eficiência hídrica e melhoria da capacidade produtiva e de armazenamento.",
@@ -65,6 +63,20 @@ def gerar_resumo_aviso(titulo, fonte):
             "10_entidades": "Sociedades comerciais legalmente constituídas com sede em Portugal.",
             "11_prazos": "Aviso de regime aberto (submissão contínua) até ao esgotamento da dotação orçamental."
         }
+    elif fonte == "IEFP":
+        return {
+            "1_areas": "Apoios à contratação sem termo, estágios profissionais (ATIVAR) e programas de criação do próprio emprego.",
+            "2_financiamento_prazos": "Pagamento efetuado em prestações (ex: 60% no início, 40% no mês 13). Obrigação de manutenção do contrato de trabalho por 24 meses.",
+            "3_montantes_regiao": "Apoio base indexado ao IAS (Indexante dos Apoios Sociais). Majorações de +25% para contratações em territórios do Interior.",
+            "4_criterios_eleg": "Criação líquida de emprego comprovada. Inexistência de despedimentos coletivos ou por extinção de posto de trabalho nos últimos 3 meses.",
+            "5_publico_alvo": "Desempregados inscritos no IEFP, com foco em jovens (<35 anos), desempregados de longa duração e públicos sub-representados.",
+            "6_cae": "Aplicável à generalidade dos CAEs (PMEs e Grandes Empresas), exceto subsetores financeiros, seguros e entidades públicas.",
+            "7_montantes_invest": "Dotação gerida diretamente pelo IEFP, frequentemente cofinanciada pelo Fundo Social Europeu Mais (FSE+).",
+            "8_taxas": "Prémio financeiro direto (Subsídio não reembolsável) por cada trabalhador contratado, acrescido de isenção ou redução de 50% na TSU.",
+            "9_despesas": "Apoio para comparticipação dos salários base dos colaboradores contratados no âmbito da medida.",
+            "10_entidades": "Pessoas singulares ou coletivas de natureza privada, com ou sem fins lucrativos.",
+            "11_prazos": "Candidaturas em regime aberto ou sujeitas a períodos de aviso específicos publicados no portal IEFPonline."
+        }
     else: # PRR e PT2030 (Genérico Industrial/Inovação)
         return {
             "1_areas": "Inovação tecnológica (Indústria 4.0), diversificação da produção e transição climática (redução de pegada carbónica).",
@@ -88,15 +100,28 @@ with st.spinner("A consultar bases de dados..."):
     else:
         df_avisos = pd.DataFrame(dados_brutos)
 
-# --- BARRA LATERAL (FILTROS) ---
+# --- BARRA LATERAL (FILTROS E ATALHOS) ---
 with st.sidebar:
     st.title("Filtros Globais")
-    fontes_totais = ["Recuperar Portugal", "Portugal 2030", "PDR2020", "Turismo de Portugal"]
+    
+    # Adicionada a nova fonte IEFP à lista base
+    fontes_totais = ["Recuperar Portugal", "Portugal 2030", "PDR2020", "Turismo de Portugal", "IEFP"]
     filtro_fonte = st.multiselect("Filtrar por Fonte:", options=fontes_totais, default=fontes_totais)
+    
     st.divider()
-    if st.button("🔄 Forçar Limpeza e Atualizar"):
+    
+    # Botão de atualização visível (Forçar limpeza)
+    if st.button("🔄 Forçar Atualização dos Dados", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
+
+    st.divider()
+
+    # ATALHOS RÁPIDOS
+    st.markdown("### 🔗 Links Oficiais Rápidos")
+    st.link_button("Balcão dos Fundos ↗", "https://balcaofundosue.pt/", use_container_width=True)
+    st.link_button("Portal das Finanças (AT) ↗", "https://www.portaldasfinancas.gov.pt/", use_container_width=True)
+    st.link_button("IEFP Online ↗", "https://iefponline.iefp.pt/", use_container_width=True)
 
 # --- CORPO PRINCIPAL ---
 st.title("Agregador Central de Financiamento")
@@ -128,13 +153,11 @@ else:
                     if st.button("Extrair e Resumir 🤖", key=f"btn_{i}", use_container_width=True):
                         st.session_state[f"exp_{i}"] = True
                 
-                # ÁREA DE RENDERIZAÇÃO DOS 11 PONTOS ELABORADOS
                 if st.session_state.get(f"exp_{i}"):
                     resumo = gerar_resumo_aviso(aviso['titulo'], aviso['fonte'])
                     st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
                     st.markdown("#### 📑 Síntese Técnica do Aviso")
                     
-                    # Organização em duas colunas para facilitar a leitura de tanta informação
                     c1, c2 = st.columns(2)
                     
                     with c1:
