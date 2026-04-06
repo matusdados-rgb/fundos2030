@@ -14,12 +14,13 @@ st.markdown("""
     .badge-aberto {background-color: #DEF7EC; color: #03543F; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;}
     .badge-fechado {background-color: #FDE8E8; color: #9B1C1C; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;}
     .badge-fonte {background-color: #F3F4F6; color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #D1D5DB; margin-left: 8px;}
-    .resumo-box {background-color: #F8FAFC; padding: 15px; border-left: 4px solid #3B82F6; border-radius: 4px; margin-bottom: 10px;}
+    .resumo-box {background-color: #F8FAFC; padding: 12px 15px; border-left: 4px solid #3B82F6; border-radius: 4px; margin-bottom: 8px; font-size: 0.95rem; line-height: 1.5;}
+    .resumo-box strong {color: #1E40AF;}
     </style>
 """, unsafe_allow_html=True)
 
 # --- 1. FUNÇÕES DE EXTRAÇÃO DE DADOS ---
-@st.cache_data(ttl=60) # Reduzido para 1 minuto para facilitar testes
+@st.cache_data(ttl=60)
 def extrair_dados():
     time.sleep(0.5)
     return [
@@ -30,35 +31,58 @@ def extrair_dados():
         {"titulo": "Qualificação da Oferta", "estado": "Aberto", "programa": "Turismo Fundos", "fonte": "Turismo de Portugal", "links": [{"nome": "Aviso Oficial", "url": "https://business.turismodeportugal.pt/"}]}
     ]
 
-# --- 2. FUNÇÃO DE RESUMO ESTRUTURADO (IA) ---
+# --- 2. FUNÇÃO DE RESUMO ESTRUTURADO (IA - 11 PONTOS) ---
 def gerar_resumo_aviso(titulo, fonte):
-    # Simulação rápida sem cache para não bloquear
+    """
+    Simula o processamento detalhado da IA para extrair exatamente os 11 pontos 
+    com informação rica e elaborada para análise técnica de consultores e PMEs.
+    """
     if fonte == "PDR2020":
-        atividades = "Aquisição de tratores, estufas e sistemas de rega."
-        destinatarios = "Agricultores ativos."
-        taxas = "Fundo perdido até 50%."
+        return {
+            "1_areas": "Modernização do setor agroflorestal, eficiência hídrica e melhoria da capacidade produtiva e de armazenamento.",
+            "2_financiamento_prazos": "Duração máxima da execução física e financeira do projeto: 18 meses após a assinatura do Termo de Aceitação.",
+            "3_montantes_regiao": "Min: 5.000€ | Max: 50.000€ por operação. Aplicável de igual forma em todo o território continental.",
+            "4_criterios_eleg": "Viabilidade económica comprovada; titularidade da exploração agrícola; inexistência de dívidas à Autoridade Tributária e Segurança Social.",
+            "5_publico_alvo": "Pessoas Singulares ou Coletivas que exerçam atividade agrícola.",
+            "6_cae": "CAE Secção A (Agricultura, Produção Animal, Caça, Floresta e Pesca), especificamente divisões 01 a 03.",
+            "7_montantes_invest": "Dotação orçamental global do aviso: 15 Milhões de Euros.",
+            "8_taxas": "Incentivo não reembolsável (Fundo Perdido). Taxa base de 40%, com majorações até 50% para Jovens Agricultores ou Zonas Desfavorecidas.",
+            "9_despesas": "Aquisição de máquinas e equipamentos novos (ex: tratores), sistemas de rega, construção/adaptação de instalações e estudos técnicos (até 5%).",
+            "10_entidades": "Agricultores ativos, Cooperativas agrícolas e Sociedades Agropecuárias.",
+            "11_prazos": "Submissões abertas de 01/05/2026 a 30/09/2026. Análise das candidaturas efetuada de forma contínua."
+        }
     elif fonte == "Turismo de Portugal":
-        atividades = "Requalificação de empreendimentos turísticos."
-        destinatarios = "Empresas de Turismo."
-        taxas = "Apoio misto (bancário + fundo perdido)."
-    else:
-        atividades = "Máquinas industriais e software."
-        destinatarios = "PME."
-        taxas = "Taxa base de 30% a 40% a fundo perdido."
-
-    return {
-        "atividades_despesas": atividades,
-        "prazos_condicoes": "Candidaturas até 31/12/2026. Sem dívidas à AT/SS.",
-        "destinatarios": destinatarios,
-        "regioes": "Portugal Continental.",
-        "taxas_incentivo": taxas
-    }
+        return {
+            "1_areas": "Transição digital, eficiência energética, economia circular e acessibilidade nos empreendimentos turísticos.",
+            "2_financiamento_prazos": "Carência de capital até 24 meses; amortização em 7 anos (projetos gerais) ou 10 anos (projetos sustentáveis).",
+            "3_montantes_regiao": "Min: 150.000€ | Max: 3.000.000€. Territórios de Baixa Densidade têm dotação específica cativada.",
+            "4_criterios_eleg": "Licenciamento turístico regularizado; Autonomia Financeira pré-projeto >= 15%; Registo Nacional de Turismo ativo.",
+            "5_publico_alvo": "Empresas com operação turística ativa (Micro, Pequenas, Médias e Grandes Empresas).",
+            "6_cae": "CAE 55 (Alojamento), 56 (Restauração), 77210 (Aluguer de bens recreativos), 93 (Atividades desportivas e de diversão).",
+            "7_montantes_invest": "Dotação global: 100 Milhões de Euros (provenientes de capitais próprios do Turismo de Portugal e Banca protocolada).",
+            "8_taxas": "Apoio Misto: Até 75% do investimento elegível garantido por financiamento bancário, com prémio de desempenho (fundo perdido) até 20% do valor do empréstimo.",
+            "9_despesas": "Obras de requalificação, aquisição de equipamentos eco-eficientes, software de gestão turística e formação de RH associada ao investimento.",
+            "10_entidades": "Sociedades comerciais legalmente constituídas com sede em Portugal.",
+            "11_prazos": "Aviso de regime aberto (submissão contínua) até ao esgotamento da dotação orçamental."
+        }
+    else: # PRR e PT2030 (Genérico Industrial/Inovação)
+        return {
+            "1_areas": "Inovação tecnológica (Indústria 4.0), diversificação da produção e transição climática (redução de pegada carbónica).",
+            "2_financiamento_prazos": "Conclusão da operação num prazo máximo de 24 meses. Pedidos de pagamento intercalares permitidos a cada 3 meses.",
+            "3_montantes_regiao": "Norte, Centro e Alentejo: Max 5M€. Lisboa e Algarve: Max 1.5M€ (condicionado às regras de auxílio de estado de minimis).",
+            "4_criterios_eleg": "Autonomia Financeira > 15% (ou 10% se startup < 1 ano); sem projetos por concluir da mesma tipologia do PT2020; Certificação PME.",
+            "5_publico_alvo": "Micro, Pequenas e Médias Empresas (PME) e, excecionalmente, Small Mid Caps (até 500 colaboradores).",
+            "6_cae": "CAE 10 a 33 (Indústrias Transformadoras), CAE 62 (Atividades de Informática) e CAE 72 (I&D).",
+            "7_montantes_invest": "Investimento mínimo elegível: 250.000€. Dotação total do concurso: 250 Milhões de Euros.",
+            "8_taxas": "Subvenção Não Reembolsável (Fundo perdido) com taxa base de 30%. Majorações: +10% Baixa Densidade; +10% Indústria 4.0. Limite máximo global: 50%.",
+            "9_despesas": "Máquinas e equipamentos produtivos, patentes e licenças, serviços de engenharia e certificações de qualidade/ambiente.",
+            "10_entidades": "Empresas sob a forma de sociedades comerciais (S.A., Lda., Unipessoal Lda.).",
+            "11_prazos": "Fase 1: Até 30/06/2026. Fase 2: Até 31/10/2026. Fase 3 (sujeito a dotação sobrante): 31/12/2026."
+        }
 
 # --- MOTOR DA APLICAÇÃO ---
 with st.spinner("A consultar bases de dados..."):
     dados_brutos = extrair_dados()
-    
-    # PROGRAMAÇÃO DEFENSIVA: Garantir que as colunas existem sempre, mesmo se os dados vierem vazios
     if not dados_brutos:
         df_avisos = pd.DataFrame(columns=["titulo", "estado", "programa", "fonte", "links"])
     else:
@@ -67,18 +91,9 @@ with st.spinner("A consultar bases de dados..."):
 # --- BARRA LATERAL (FILTROS) ---
 with st.sidebar:
     st.title("Filtros Globais")
-    
-    # LISTA FIXA DE FONTES
     fontes_totais = ["Recuperar Portugal", "Portugal 2030", "PDR2020", "Turismo de Portugal"]
-    
-    filtro_fonte = st.multiselect(
-        "Filtrar por Fonte:", 
-        options=fontes_totais, 
-        default=fontes_totais
-    )
-    
+    filtro_fonte = st.multiselect("Filtrar por Fonte:", options=fontes_totais, default=fontes_totais)
     st.divider()
-    # Limpeza explícita de cache
     if st.button("🔄 Forçar Limpeza e Atualizar"):
         st.cache_data.clear()
         st.rerun()
@@ -89,7 +104,6 @@ st.title("Agregador Central de Financiamento")
 if df_avisos.empty:
     st.warning("A base de dados encontra-se atualmente vazia.")
 else:
-    # FILTRO APLICADO AQUI
     df_filtrado = df_avisos[df_avisos['fonte'].isin(filtro_fonte)]
 
     tab_abertos, tab_fechados = st.tabs(["🟢 Avisos Abertos", "🔴 Histórico"])
@@ -114,16 +128,29 @@ else:
                     if st.button("Extrair e Resumir 🤖", key=f"btn_{i}", use_container_width=True):
                         st.session_state[f"exp_{i}"] = True
                 
+                # ÁREA DE RENDERIZAÇÃO DOS 11 PONTOS ELABORADOS
                 if st.session_state.get(f"exp_{i}"):
                     resumo = gerar_resumo_aviso(aviso['titulo'], aviso['fonte'])
                     st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
-                    st.markdown(f"""
-                    <div class='resumo-box'><strong>🛠️ Atividades:</strong> {resumo['atividades_despesas']}</div>
-                    <div class='resumo-box'><strong>🗓️ Prazos:</strong> {resumo['prazos_condicoes']}</div>
-                    <div class='resumo-box'><strong>🎯 Destinatários:</strong> {resumo['destinatarios']}</div>
-                    <div class='resumo-box'><strong>📍 Regiões:</strong> {resumo['regioes']}</div>
-                    <div class='resumo-box'><strong>💰 Taxas:</strong> {resumo['taxas_incentivo']}</div>
-                    """, unsafe_allow_html=True)
+                    st.markdown("#### 📑 Síntese Técnica do Aviso")
+                    
+                    # Organização em duas colunas para facilitar a leitura de tanta informação
+                    c1, c2 = st.columns(2)
+                    
+                    with c1:
+                        st.markdown(f"<div class='resumo-box'><strong>1. Áreas de Intervenção:</strong><br>{resumo['1_areas']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>3. Investimento por Região (Min/Max):</strong><br>{resumo['3_montantes_regiao']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>5. Público-Alvo:</strong><br>{resumo['5_publico_alvo']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>7. Montantes Globais de Investimento:</strong><br>{resumo['7_montantes_invest']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>9. Despesas Elegíveis:</strong><br>{resumo['9_despesas']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>11. Prazos de Candidatura:</strong><br>{resumo['11_prazos']}</div>", unsafe_allow_html=True)
+
+                    with c2:
+                        st.markdown(f"<div class='resumo-box'><strong>2. Financiamento e Prazos de Execução:</strong><br>{resumo['2_financiamento_prazos']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>4. Critérios de Elegibilidade:</strong><br>{resumo['4_criterios_eleg']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>6. CAE Elegíveis:</strong><br>{resumo['6_cae']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>8. Taxas de Financiamento:</strong><br>{resumo['8_taxas']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='resumo-box'><strong>10. Entidades Elegíveis:</strong><br>{resumo['10_entidades']}</div>", unsafe_allow_html=True)
 
     with tab_abertos:
         renderizar_lista(df_filtrado[df_filtrado['estado'] == "Aberto"])
